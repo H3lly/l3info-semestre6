@@ -1,0 +1,16 @@
+%{
+  #include <stdio.h>
+  int flag;
+%}
+
+
+
+%%
+\n {printf("ok:%d", flag);}
+abb {flag=1;}
+[abc] {}
+. printf("ERROR\n");
+%%
+
+int yywrap() {return 1;}
+int main(int argc, char ** argv){flag=0; yylex(); return 0;}
