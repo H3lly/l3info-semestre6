@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <float.h>
+
 
 #include "utils.h"
 #include "variables.h"
@@ -29,13 +31,67 @@ static double dist(point p1, point p2) {
 }
 
 static double value(point *V, int n, int *P) {
-	// ...
-	return 0;
+  double val = 0;
+  for(int i=0 ; i<n-1 ; ++i)
+    val +=dist(V[P[i]], V[P[i+1]]);
+  return val+dist(V[P[n-1]], V[P[0]]);
+}
+
+/*static int * modifier_P(point *V, int *P,){
+  faire le 
+  }*/
+static double value_opti(point *V, int n, int *P, double w) {
+  double val = 0;
+  int i;
+  for(i=0 ; i<n-1 ; ++i){
+    val +=dist(V[P[i]], V[P[i+1]]);
+    if(val+=dist(V[P[i+1]], V[P[0]])>w)
+      break;
+  }
+  if(i==n-1)
+    return val+dist(V[P[n-1]], V[P[0]]);
+  else{
+    //modifier_P
+    return -i;
+  }
+}
+
+static double tsp_brute_force_opti(point *V, int n, int *P) {
+  int Q[n];
+  double res = DBL_MAX;
+  for(int i=0 ; i<n ; ++i){
+    Q[i] = i;
+  }
+  do{
+    int val = value_opti(V, n, Q, res);
+    if(res>val && val>0){
+      res=val;
+      for(int j=0 ; j<n ; ++j)
+        P[j] = Q[j];
+    }
+  }while(NextPermutation(Q, n)>0);
+  return res;
 }
 
 static double tsp_brute_force(point *V, int n, int *P) {
-	// ...
-	return 0;
+  int Q[n];
+  double res = DBL_MAX;
+  for(int i=0 ; i<n ; ++i){
+    Q[i] = i;
+  }
+  do{
+    int val = value(V, n, Q);
+    if(res>val){
+      res=val;
+      for(int j=0 ; j<n ; ++j)
+        P[j] = Q[j];
+    }
+  }while(NextPermutation(Q, n)>0);
+  return res;
+}
+
+static double tsp_quelquechose(){
+
 }
 
 // Taille initiale de la fenêtre
@@ -73,8 +129,9 @@ int main(int argc, char *argv[]) {
 
 	bool need_redraw = true;
 	bool wait_event = true;
-
 	int n = 10;
+	if(argc > 1)
+	  n = atoi(argv[1]);
 	int X = 300, Y = 200;
 	point *V = generatePoints(n, X, Y);
 	int *P = malloc(n * sizeof(int));
@@ -84,7 +141,8 @@ int main(int argc, char *argv[]) {
 	TopChrono(1); // départ du chrono 1
 
 	double w = tsp_brute_force(V,n,P);
-
+	//double w = tsp_brute_force_opti(V,n,P);
+	
 	char *s = TopChrono(1); // s=durée
 
 	printf("value: %g\n",w);
