@@ -68,8 +68,8 @@ static double tsp_prog_dyn(point *V, int n, int *Q){
   //FIN CODE PROF
     
     do{
-      int xm;
       //CODE PROF
+      int xm;
       for(int t=0; t<n1;t++){
 	if (!IN_SET(S, t)) continue;
 	double m = DBL_MAX; //double maximum
@@ -81,26 +81,23 @@ static double tsp_prog_dyn(point *V, int n, int *Q){
 	}
 	D[t][S].d=m;
 	D[t][S].v=xm;
-      }
-
-      //while....
-      
+      }      
       //FIN
-      ...
       
          drawPath(V, n, Q, i+1); // dessine le chemin courant
 
-      ...
+	 //...
 	
     }while ((S = nextSet(S, n-1)) && running);
 
     // ne pas reconstruire la permutation si le calcul a été interrompu
     if(!running){
-      free ...
+      free(D); //?? pas sûre
       return -1;
     }
 
     // tournée_min
+    ///moi < ?
 
     
     free ...
