@@ -4,10 +4,8 @@
 %}
 
 %%
-cabb { printf("(%d, 0)\n", cpt); cpt+=yyleng;}
-cbab { printf("(%d, 1)\n", cpt); cpt+=yyleng;}
-cbbba { printf("(%d, 3)\n", cpt); cpt+=yyleng;}
-cbb { printf("(%d, 2)\n", cpt); cpt+=yyleng;}
+cabbb { printf("(%d, 0)\n", cpt); REJECT;}
+bbc { printf("(%d, 1)\n", cpt); REJECT;}
 [abc] {cpt++;}
 . { cpt++;printf("Lecture d'un caractère n'appartenant pas à l'alphabet.\n");}
 \n {cpt=0;}
