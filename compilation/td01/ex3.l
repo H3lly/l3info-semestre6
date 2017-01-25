@@ -7,8 +7,6 @@
 %%
 a {cpta++;}
 b {cptb++;}
-[ab] {}
-. {printf("Nope.\n");}
 \n {
   if(cpta%2 == 0 && cptb%2 == 1 && cpta!=0 && cptb !=0)
     printf("Mot reconnu.\n");
