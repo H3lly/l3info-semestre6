@@ -1,6 +1,15 @@
-all:
-	@echo "Pas d'instructions de compilations."
+CC=g++
+CFLAGS:= -std=c++11
+LDFLAGS:= -lfl
+SRCS = $(wildcard *.l)
 
-.PHONY: clean
-clean:
-	@rm -rf compilation/td01/lex.yy.c compilation/td01/*~ 
+PROGS = $(patsubst %.l,%,$(SRCS))
+
+all: $(PROGS)
+
+%: %.l
+	flex -o $@.yy.cc $< 
+	$(CC) $(CFLAGS) -o $@ $@.yy.cc $(LDFLAGS)
+
+clean :
+	rm *.cc $(PROGS)
