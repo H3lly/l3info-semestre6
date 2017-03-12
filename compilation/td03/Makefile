@@ -1,22 +1,20 @@
 CFLAGS= -std=c89
-LIBS=
+CLIBS=
 CC= gcc
 
 .PHONY: all clean
 
-.SUFFIXES: .y .l .h .c .o
+.SUFFIXES: .y .l .tab.h .tab.c .o .yy.c
 
 all: programme
 
-programme: td3.3.o
+programme: ex4.yy.o
 	$(CC) $(CLIBS) -o $@ $^
 	
-.y.c:
+.y.tab.c:
 	yacc --file-prefix=$* -d $<
-	mv $*.tab.c $*.c
-	mv $*.tab.h $*.h
 
-.l.c:
+.l.yy.c:
 	lex -o $@ $<
 
 .c.o:
@@ -26,4 +24,4 @@ programme: td3.3.o
 	$(CC) $(CLIBS) -o $% $<
 
 clean:
-	rm *.o *.h programme
+	rm *yy.o programme
