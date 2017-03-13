@@ -87,7 +87,9 @@ double weight[]={
 void A_star(grid G, heuristic h){
   node* P;
   node s = createNode(G.start, 0.0, 0.0+h, null);
-  while(/*P est pas vide*/)
+  while(/*P est pas vide*/){
+    
+  }
   
   ;;;
   // Pensez à dessiner la grille avec drawGrid(G) à chaque fois que
