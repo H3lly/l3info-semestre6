@@ -96,20 +96,35 @@ static point* generatePoints(int n, int X, int Y) {
 }
 
 static double dist(point A, point B){
-  return sqrt((A.x-B.x)*(A.x-B.x)+(A.y-B.y)*(A.y-B.y));
+  return sqrt((B.x-A.x)*(B.x-A.x)+(B.y-A.y)*(B.y-A.y));
 }
 
 static double value(point *V, int n, int *P){
-	int val = 0;
+	double val = 0;
   for(int i=0 ; i<n-1 ; ++i){
     val += dist(V[P[i]], V[P[i+1]]);
   }
   return val;
 }
 
-static double tsp_brute_force(point *V, int n, int *Q){
-	// ...
-	return 0;
+static double tsp_brute_force(point *V, int n, int *P){
+  //remplissage de P et tmp de la sorte : 0 1 2 3 ... n-1
+  int tmp[n];
+  for(int i=0 ; i<n ; ++i){
+    P[i] = i;
+    tmp[i] = i;
+  }
+  double max = value(V, n, tmp); //initialisation de la première val possible
+  NextPermutation(tmp, n);
+  while(NextPermutation(tmp, n) && tmp[0]==0){
+    double res = value(V, n, tmp);
+    if(res<max)
+      max=res;
+    for(int i=0; i<n ; i++){
+      P[i] = tmp[i];
+    }
+  }
+  return max;
 }
 
 static void MaxPermutation(int *P, int k){
@@ -146,7 +161,7 @@ int main(int argc, char *argv[]) {
 	bool need_redraw = true;
 	bool wait_event = true;
 
-	int n = 10;
+	int n = 5;
 	point *V = generatePoints(n, width, height);
 	int *P = malloc(n * sizeof(int));
 	for(int i = 0; i < n; i++) P[i] = i; // première permutation
