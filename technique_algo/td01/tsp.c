@@ -132,19 +132,30 @@ void afficher_tableau(int *P, int n){
   printf("%d]\n", n-1);
 }
 
-static void MaxPermutation(int *P, int k, int len){
-  int prefixe  = k-1;
-  int indice_actuel = len--;
-  printf("avant : ");
-  afficher_tableau(P, len);
-  while(P[indice_actuel]!=prefixe){
-    P[indice_actuel] = k;
-    indice_actuel--;
-    k++;
-  }
-  printf("après : ");
-  afficher_tableau(P, len);
-  printf("\n");
+struct paire {
+    int val;
+    int use;
+};
+
+static void MaxPermutation(int *P, int n, int k) {
+    struct paire Tab[n];
+    for (int i = 0; i < n; i++) {
+        Tab[i].val = i;
+        Tab[i].use = 0;
+    }
+    for (int i = 0; i < k; i++)
+        Tab[P[i]].use = 1;
+    for (int i = k; i < n; i++) {
+        int j = n - 1;
+        while (Tab[j].use == 1 && j > 0) {
+            j--;
+        }
+        if (Tab[j].use == 0) {
+            P[i] = Tab[j].val;
+            Tab[j].use = 1;
+        }
+    }
+
 }
 
 static double value_opt(point *V, int n, int *P,double w){
@@ -162,23 +173,19 @@ static double tsp_brute_force_opt(point *V, int n, int *P){
   for(int i=0 ; i<n ; ++i){
     tmp[i] = P[i];
   }
-  printf("Départ : ");
   double max = value(V, n, tmp);
   do{
-    printf(" - ");
-    afficher_tableau(tmp,n);
+
     double res = value_opt(V, n, tmp, max);
     if(res>0){
       if(res<max){
         max=res;
         for(int i=0; i<n ; i++)
           P[i] = tmp[i];
-        printf("C'est ici : ");
-        afficher_tableau(P,n);
       }
     } else {
-       //MaxPermutation(tmp, -res, n);
-       printf("next");
+       MaxPermutation(tmp, -res, n);
+
     }
   } while(NextPermutation(tmp, n) && tmp[0]==0);
   return max;
