@@ -121,23 +121,67 @@ static double tsp_brute_force(point *V, int n, int *P){
       for(int i=0; i<n ; i++)
         P[i] = tmp[i];
     }
-  } while(NextPermutation(tmp, n) && tmp[0]==0);
+  } while(NextPermutation(tmp, n)/* && tmp[0]==0*/);
   return max;
 }
 
-static void MaxPermutation(int *P, int k){
-	// ...
-	return;
+void afficher_tableau(int *P, int n){
+  printf("[");
+  for(int i=0 ; i<n-1 ; ++i)
+    printf("%d, ", P[i]);
+  printf("%d]\n", n-1);
+}
+
+static void MaxPermutation(int *P, int k, int len){
+  int prefixe  = k-1;
+  int indice_actuel = len--;
+  printf("avant : ");
+  afficher_tableau(P, len);
+  while(P[indice_actuel]!=prefixe){
+    P[indice_actuel] = k;
+    indice_actuel--;
+    k++;
+  }
+  printf("après : ");
+  afficher_tableau(P, len);
+  printf("\n");
 }
 
 static double value_opt(point *V, int n, int *P,double w){
-	// ...
-	return 0;
+	double val = 0;
+  for(int i=0 ; i<n-1 ; ++i){
+    val += dist(V[P[i]], V[P[i+1]]);
+    if(val>w)
+      return -(i+1);
+  }
+  return val+dist(V[P[n-1]], V[P[0]]);
 }
 
-static double tsp_brute_force_opt(point *V, int n, int *Q){
-	// ...
-	return 0;
+static double tsp_brute_force_opt(point *V, int n, int *P){
+  int tmp[n];
+  for(int i=0 ; i<n ; ++i){
+    tmp[i] = P[i];
+  }
+  printf("Départ : ");
+  double max = value(V, n, tmp);
+  do{
+    printf(" - ");
+    afficher_tableau(tmp,n);
+    double res = value_opt(V, n, tmp, max);
+    if(res>0){
+      if(res<max){
+        max=res;
+        for(int i=0; i<n ; i++)
+          P[i] = tmp[i];
+        printf("C'est ici : ");
+        afficher_tableau(P,n);
+      }
+    } else {
+       //MaxPermutation(tmp, -res, n);
+       printf("next");
+    }
+  } while(NextPermutation(tmp, n) && tmp[0]==0);
+  return max;
 }
 
 // taille initiale de la fenêtre
@@ -159,30 +203,31 @@ int main(int argc, char *argv[]) {
 	bool need_redraw = true;
 	bool wait_event = true;
 
-	int n = 12;
+	int n = 5;
 	point *V = generatePoints(n, width, height);
 	int *P = malloc(n * sizeof(int));
 	for(int i = 0; i < n; i++) P[i] = i; // première permutation
 	drawTour(V, n, NULL); // dessine les points
 
-	{
+	{/*
 	  TopChrono(1); // départ du chrono 1
 	  double w = tsp_brute_force(V,n,P);
 	  char *s = TopChrono(1); // s=durée
 	  printf("value: %g\n",w);
 	  printf("runing time: %s\n",s);
 	  drawTour(V, -n, P); // dessine la tournée
+    */
 	}
 
 	{
-	  /*
+	  
 	    TopChrono(1); // départ du chrono 1
 	    double w = tsp_brute_force_opt(V,n,P);
 	    char *s = TopChrono(1); // s=durée
 	    printf("value: %g\n",w);
 	    printf("runing time: %s\n",s);
 	    drawTour(V, -n, P); // dessine la tournée
-	  */
+	  
 	}
 
 	{
